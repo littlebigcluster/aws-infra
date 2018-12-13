@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source .env
+
 # Check if a given program is in PATH
 check_program () {
   
@@ -52,9 +54,13 @@ echo $VPC_CIDR
 sed -i s~VPC_CIDR~$VPC_CIDR~ variables.tf
 
 
+# # ldap Anybox Password
+# echo "LDAP paswword Anybox ?"
+# read -n LDAPPASS
+# export TF_VAR_ldap_password=$LDAPPASS
 
-# Aleatoire PostgreSQL Password
-export TF_VAR_postgres_gitlab_pass=$(openssl rand -base64 20 | sed 's/\///g')
+# # Aleatoire PostgreSQL Password
+# export TF_VAR_postgres_gitlab_pass=$(openssl rand -base64 20 | sed 's/\///g')
 
 
 

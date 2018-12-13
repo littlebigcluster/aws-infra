@@ -2,9 +2,13 @@
 
 RDS_HOST=$(echo -n "${RDS_ENDPOINT}" | cut -d: -f1)
 export ANSIBLE_HOST_KEY_CHECKING="False"
-export ANSIBLE_SSH_ARGS='-o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o AddKeysToAgent=no'
-# Create ansible hosts file
+export ANSIBLE_SSH_ARGS='-o IdentitiesOnly=yes \
+-o StrictHostKeyChecking=no \
+-o UserKnownHostsFile=/dev/null \
+-o AddKeysToAgent=no'
 
+
+# Create ansible hosts file
 
 cat <<EOF > hosts
 [gitlab-server]
@@ -25,5 +29,13 @@ done
 # Configure Instance
 
 ansible-playbook -i hosts --private-key "${KEYPAIR}" site.yml \
---extra-vars "full_qualified_name=${FQN_DOMAIN} postgres_host=${RDS_HOST} postgres_gitlab_pass=${RDS_PASS} redis_host=${REDIS_ENDPOINT} efs_dnsname=${EFS}"
+--extra-vars "full_qualified_name_ssh=${FQN_DOMAIN_SSH} \
+full_qualified_name=${FQN_DOMAIN} \
+postgres_host=${RDS_HOST} \
+postgres_gitlab_pass=${RDS_PASS} \
+smtp_password=${SMTP_PASS} \
+ldap_password=${LDAP_PASS} \
+redis_host=${REDIS_ENDPOINT} \
+gitlab_root_password=${GITLABROOT_PASS} \
+efs_dnsname=${EFS}"
 

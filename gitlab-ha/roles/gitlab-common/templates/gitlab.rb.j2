@@ -14,6 +14,12 @@ external_url 'https://{{ system_fqdn }}'
 nginx['listen_port'] = 80
 nginx['listen_https'] = false
 
+nginx['proxy_set_headers'] = {
+  "X-Forwarded-Proto" => "https",
+  "X-Forwarded-Ssl" => "on"
+}
+
+
 ## Legend
 ##! The following notations at the beginning of each line may be used to
 ##! differentiate between components of this file and to easily select them using
@@ -38,15 +44,15 @@ nginx['listen_https'] = false
 ## gitlab.yml configuration
 ##! Docs: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/gitlab.yml.md
 ################################################################################
-# gitlab_rails['gitlab_ssh_host'] = 'ssh.host_example.com'
+gitlab_rails['gitlab_ssh_host'] = '{{ system_fqdn_ssh }}'
 # gitlab_rails['time_zone'] = 'UTC'
 
 ### Email Settings
  gitlab_rails['gitlab_email_enabled'] = true
- gitlab_rails['gitlab_email_from'] = 'gitlab@example.com'
+ gitlab_rails['gitlab_email_from'] = 'gitlab@anybox.fr'
  gitlab_rails['gitlab_email_display_name'] = 'gitlab'
- gitlab_rails['gitlab_email_reply_to'] = 'noreply@example.com'
- gitlab_rails['gitlab_email_subject_suffix'] = ''
+ gitlab_rails['gitlab_email_reply_to'] = 'noreply@anybox.fr'
+ gitlab_rails['gitlab_email_subject_suffix'] = 'GITLAB - '
 
 ### GitLab user privileges
  gitlab_rails['gitlab_default_can_create_group'] = true
@@ -299,7 +305,7 @@ gitlab_rails['shared_path'] = '{{ gitlab_datadir }}/shared'
 ### DEPRECATED: gitlab_rails['satellites_timeout'] = 30
 
 ### GitLab Shell settings for GitLab
- gitlab_rails['gitlab_shell_ssh_port'] = 22
+ gitlab_rails['gitlab_shell_ssh_port'] = 2222
  gitlab_rails['git_max_size'] = 20971520
  gitlab_rails['git_timeout'] = 10
 
@@ -345,7 +351,7 @@ gitlab_rails['uploads_directory'] = "{{ gitlab_datadir }}/uploads"
 #### Change the initial default admin password and shared runner registraion tokens.
 ####! **Only applicable on initial setup, changing these settings after database
 ####!   is created and seeded won't yield any change.**
-# gitlab_rails['initial_root_password'] = "password"
+gitlab_rails['initial_root_password'] = "{{ gitlab_root_pass }}"
 # gitlab_rails['initial_shared_runners_registration_token'] = "token"
 
 #### Enable or disable automatic database migrations
@@ -1455,3 +1461,32 @@ gitlab_ci['builds_directory'] = '{{ gitlab_datadir }}/builds'
 #   "process_commit,post_receive",
 #   "gitlab_shell"
 # ]
+
+
+
+
+ gitlab_rails['ldap_enabled'] = true
+
+##! **remember to close this block with 'EOS' below**
+ gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
+   main: # 'main' is the GitLab 'provider ID' of this LDAP server
+     label: 'LDAP'
+     host: 'ldap2.anybox.fr'
+     port: 636
+     uid: 'uid'
+     bind_dn: 'uid=gitlab,ou=applications,dc=anybox,dc=fr'
+     password: '{{ ldap_password }}'
+     encryption: 'simple_tls' # "start_tls" or "simple_tls" or "plain"
+     verify_certificates: false
+#     active_directory: true
+     allow_username_or_email_login: false
+##     lowercase_usernames: false
+     block_auto_created_users: false
+     base: 'ou=people,dc=anybox,dc=fr'
+     user_filter: '(objectClass=inetOrgPerson)'
+##     ## EE only
+##     group_base: ''
+##     admin_group: ''
+##     sync_ssh_keys: false
+##
+EOS

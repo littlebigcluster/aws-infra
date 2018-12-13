@@ -23,6 +23,9 @@ variable "key" {
   default = "anybox"
 }
 variable "dnsname" {
+  default = "gitlab.anybox.cloud"
+}
+variable "dnsnamessh" {
   default = "git.anybox.cloud"
 }
 variable "domainname" {
@@ -36,7 +39,9 @@ variable "efs_mt_count" {}
 variable "postgres_instance" {}
 variable "postgres_gitlab_dbname" {}
 variable "postgres_gitlab_user" {}
-variable "postgres_gitlab_pass" {}
+variable "postgres_gitlab_pass" {
+  default = "psqlpassword"
+}
 variable "elasticache_type" {}
 variable "elasticache_parameter_group" {}
 variable "seed_instance_type" {}
@@ -48,3 +53,12 @@ variable "gitlab_instances_min" {}
 variable "autoscaling_check_grace" {}
 variable "autoscaling_check_type" {}
 variable "autoscaling_capacity" {}
+variable "ldap_password" {
+  default = "ldappassword"
+}
+variable "smtp_password" {
+  default = "smtppassword"
+}
+variable "gitlab_root_password" {
+  default = "gitlab_root_password"
+}

@@ -290,18 +290,49 @@ resource "aws_instance" "gitlab-seed" {
 INSTANCE_IP=${aws_instance.gitlab-seed.public_ip} \
 RDS_ENDPOINT=${aws_db_instance.gitlab-postgres.endpoint} \
 RDS_PASS=${var.postgres_gitlab_pass} \
+LDAP_PASS=${var.ldap_password} \
+SMTP_PASS=${var.smtp_password} \
 REDIS_ENDPOINT=${aws_elasticache_cluster.gitlab-redis.cache_nodes.0.address} \
 KEYPAIR=${var.key_path} \
 FQN_DOMAIN=${var.dnsname} \
+FQN_DOMAIN_SSH=${var.dnsnamessh} \
+GITLABROOT_PASS=${var.gitlab_root_password} \
 EFS="${aws_efs_file_system.gitlab_efs.id}.efs.${var.aws_region}.amazonaws.com" \
 ./configure_instances.sh
 SCRIPT
+  }
+  # lifecycle {
+  #   ignore_changes = true
+  # }  
+}
+
+
+# Create AMI for autoscaling. This image is created based on
+# the seed previously configured
+# resource "random_id" "server" {
+#   # keepers = {
+#   #   # Generate a new id each time we switch to a new AMI id
+#   #   ami_id = "${var.ami_id}"
+#   # }
+#   byte_length = 8
+# }
+
+resource "aws_ami_from_instance" "gitlab-ami" {
+    name = "${var.ami_id}-${replace(timestamp(), ":", "")}"
+    source_instance_id = "${aws_instance.gitlab-seed.id}"
+    lifecycle {
+      create_before_destroy = true
   }
 }
 
 
 
-# Genarate ACM certificate to git.mondomain.com and attach it to LB !
+
+################################
+# CERTIFICATE
+#################################
+
+# Generate ACM certificate to git.mondomain.com and attach it to LB !
 resource "aws_acm_certificate" "gitlab_cert" {
   domain_name       = "*.${var.domainname}"
   validation_method = "DNS"
@@ -338,6 +369,9 @@ resource "aws_acm_certificate_validation" "gitlab_cert" {
 
 
 
+################################
+# LOAD BALANCER
+#################################
 
 # Load Balancing application - needed by many ssl domain name certicate ( up to 25 by LB )
 resource "aws_lb" "gitlab_lb" {
@@ -368,7 +402,6 @@ resource "aws_lb_listener" "http_lb_listener" {
     }
   }
 }
-
 resource "aws_lb_listener" "https_lb_listener" {  
   load_balancer_arn = "${aws_lb.gitlab_lb.arn}"  
   port              = "443"
@@ -396,13 +429,9 @@ resource "aws_lb_listener" "https_lb_listener" {
 
 #   condition {
 #     field  = "host-header"
-#     values = ["git.anybox.cloud"]
+#     values = ["gitlab.anybox.cloud"]
 #   }
 # }
-
-
-
-
 
 resource "aws_lb_target_group" "gitlab_lb" {
   name     = "gitlabgrp"
@@ -410,22 +439,22 @@ resource "aws_lb_target_group" "gitlab_lb" {
   protocol = "HTTP"
   vpc_id   = "${var.vpc_id}"
   health_check {    
-    healthy_threshold   = 2    
-    unhealthy_threshold = 2    
-    timeout             = 4    
-    interval            = 5    
-    matcher             = "200-499"   
-    port                = "80" 
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 4
+    interval            = 5
+    matcher             = "200-499"
+    port                = "80"
   }
 }
-
-
-
 
 # Create a new ALB Target Group attachment
 resource "aws_autoscaling_attachment" "gitlab_asglb" {
   autoscaling_group_name = "${aws_autoscaling_group.gitlab_autoscaling.id}"
   alb_target_group_arn   = "${aws_lb_target_group.gitlab_lb.arn}"
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 
@@ -445,7 +474,6 @@ resource "aws_lb" "gitlab_nlb" {
   }
 }
 
-
 resource "aws_lb_listener" "ssh_lb_listener" {  
   load_balancer_arn = "${aws_lb.gitlab_nlb.arn}"  
   port              = "22"
@@ -457,20 +485,26 @@ resource "aws_lb_listener" "ssh_lb_listener" {
     type             = "forward"
   }
 }
-
-
 resource "aws_lb_target_group" "gitlab_ssh" {
   name     = "gitlabssh"
   protocol = "TCP"
-  port     = 22
+  port     = 2222
   vpc_id      = "${var.vpc_id}"
+  # health_check {    
+  #   healthy_threshold   = 2
+  #   unhealthy_threshold = 2
 
+  #   interval            = 10
+  # }
 }
 
-# Create a new ALB Target Group attachment
+# Create a new NLB Target Group attachment
 resource "aws_autoscaling_attachment" "gitlab_asgssh" {
   autoscaling_group_name = "${aws_autoscaling_group.gitlab_autoscaling.id}"
   alb_target_group_arn   = "${aws_lb_target_group.gitlab_ssh.arn}"
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 
@@ -478,7 +512,9 @@ resource "aws_autoscaling_attachment" "gitlab_asgssh" {
 
 
 
-
+################################
+# DNS
+#################################
 
 # Add Route53 entry
 data "aws_route53_zone" "my_zone" {
@@ -499,26 +535,26 @@ resource "aws_route53_record" "gitlab" {
 }
 
 
-# Create AMI for autoscaling. This image is created based on
-# the seed previously configured
-# resource "random_id" "server" {
-#   # keepers = {
-#   #   # Generate a new id each time we switch to a new AMI id
-#   #   ami_id = "${var.ami_id}"
-#   # }
-#   byte_length = 8
-# }
 
-resource "aws_ami_from_instance" "gitlab-ami" {
-    name = "${var.ami_id}-${replace(timestamp(), ":", "")}"
-    source_instance_id = "${aws_instance.gitlab-seed.id}"
-    lifecycle {
-      ignore_changes = true
-    }
-  #   lifecycle {
-  #     create_before_destroy = true
-  # }
+resource "aws_route53_record" "gitlab_ssh" {
+  zone_id = "${data.aws_route53_zone.my_zone.zone_id}"
+  name    = "${var.dnsnamessh}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_lb.gitlab_nlb.dns_name}"
+    zone_id                = "${aws_lb.gitlab_nlb.zone_id}"
+    evaluate_target_health = true
+  }
 }
+
+
+
+
+################################
+# AUTO SCALING GROUP
+#################################
+
 
 # Launch configuration. The AMI created is used by LC
 resource "aws_launch_configuration" "gitlab_lc" {
@@ -528,7 +564,6 @@ resource "aws_launch_configuration" "gitlab_lc" {
   security_groups = ["${aws_security_group.sg_gitlab_private.id}"]
   key_name = "${var.key}"
   iam_instance_profile  = "${aws_iam_instance_profile.s3_gitlab_backup.id}"
-  # key_name = "${aws_key_pair.gitlab-keypair.id}"
   lifecycle {
     create_before_destroy = true
   }
@@ -537,7 +572,6 @@ resource "aws_launch_configuration" "gitlab_lc" {
 # Autoscaling Group configuration. Autoscaling uses the LC previously created
 # and attach the instances with ELB
 resource "aws_autoscaling_group" "gitlab_autoscaling" {
-  # availability_zones = ["${data.aws_availability_zones.available.names[0]}", "${data.aws_availability_zones.available.names[1]}"]
   name = "gitlab-autoscaling-${aws_launch_configuration.gitlab_lc.id}"
   max_size = "${var.gitlab_instances_max}"
   min_size = "${var.gitlab_instances_min}"
@@ -545,9 +579,9 @@ resource "aws_autoscaling_group" "gitlab_autoscaling" {
   health_check_type = "${var.autoscaling_check_type}"
   desired_capacity = "${var.autoscaling_capacity}"
   force_delete = true
-  # load_balancers = ["${aws_lb.gitlab_lb.id}","${aws_lb.gitlab_nlb.id}"]
+  # load_balancers = ["${aws_lb.gitlab_nlb.id}"]
+  # target_group_arns = ["${aws_lb.gitlab_lb.arn}"]
   vpc_zone_identifier = ["${var.subnet_idz}"]
-  # vpc_zone_identifier = ["${aws_subnet.net-gitlab-private.*.id}"]
   launch_configuration = "${aws_launch_configuration.gitlab_lc.name}"
 
   tag {

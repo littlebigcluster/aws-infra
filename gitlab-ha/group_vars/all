@@ -1,11 +1,12 @@
 ---
 # defaults file for gitlab-common
 system_fqdn: "{{ full_qualified_name }}"
+system_fqdn_ssh: "{{ full_qualified_name_ssh }}"
 gitlab_omnibus: "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh"
 gitlab_user: "git"
 gitlab_datadir: "/gitlab-data"
-gitlab_root_pass: "MonSecretPassword"
-gitlab_root_email: "gitlab@anybox.cloud"
+gitlab_root_pass: "{{ gitlab_root_password }}"
+gitlab_root_email: "gitlab@anybox.fr"
 postgres_gitlab_user: "git"
 #postgres_gitlab_pass: "verystrongpassword"
 postgres_gitlab_attr: "CREATEDB"
@@ -19,5 +20,6 @@ unicorn_workers: "3"
 #redis_host: "localhost"
 redis_port: "6379"
 #efs_dnsname
-smtp_sender: "noreply@anybox.cloud"
-smtp_password: "123456789"
+smtp_sender: "no-reply@anybox.fr"
+smtp_password: "{{ smtp_password }}"
+ldap_password: "{{ ldap_password }}"

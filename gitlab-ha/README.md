@@ -54,6 +54,7 @@ Lancer le script sh ( reprend l'ensemble des commandes terraform ):
 * Une AMI est créée depuis cette instance seed
 * Un Autoscaling groupe est créé avec cette AMI
 * Un Bucket S3 est reservé à la sauvegarde
+* Un backup de gitlab sur S3 est croné toutes les heures
 
 ## Ressources AWS utilisées:
 

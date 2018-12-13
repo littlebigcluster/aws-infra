@@ -105,6 +105,19 @@
     group: root
     mode: 0600
 
+# Install Anybox Certificate
+- name: Copy Anybox Certificate
+  copy:
+    src: Anybox_CA2.crt
+    dest: /usr/local/share/ca-certificates/Anybox_CA2.crt
+    owner: root
+    group: root
+    mode: 0750
+
+- name: Configure certificate
+  command: update-ca-certificates
+
+
 - name: Configure gitlab-ce
   command: gitlab-ctl reconfigure
   args:
@@ -114,5 +127,5 @@
 - cron:
     name: "Backup Gitlab"
     minute: "0"
-    hour: "2"
+    hour: "*/1"
     job: "gitlab-rake gitlab:backup:create > /dev/null"

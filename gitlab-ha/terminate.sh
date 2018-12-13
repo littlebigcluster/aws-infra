@@ -24,7 +24,7 @@ done
 
 
 # Define dummy password to avoid been prompted by terraform
-export TF_VAR_postgres_gitlab_pass="somevalue"
+# export TF_VAR_postgres_gitlab_pass="somevalue"
 
 
 # terraform destroy
