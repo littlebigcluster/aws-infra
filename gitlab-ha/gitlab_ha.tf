@@ -141,7 +141,9 @@ resource "aws_security_group" "sg_gitlab_redis" {
   }
 }
 
+############################
 # EFS: Will provide a NFS(file sharing) service to store common files and repo
+############################
 resource "aws_efs_file_system" "gitlab_efs" {
   creation_token = "gitlab_efs_001"
 
@@ -162,13 +164,15 @@ resource "aws_efs_mount_target" "gitlab_efs_mt" {
   security_groups = ["${aws_security_group.sg_gitlab_public.id}", "${aws_security_group.sg_gitlab_private.id}"]
 }
 
-
+####################################
 # RDS - PostgreSQL: Main DB used by GitLab
+######################################
 resource "aws_db_instance" "gitlab-postgres" {
   allocated_storage	= 10
   engine		= "postgres"
   engine_version	= "9.6.10"
   instance_class	= "${var.postgres_instance}"
+  multi_az = true
   name			= "${var.postgres_gitlab_dbname}"
   username		= "${var.postgres_gitlab_user}"
   password		= "${var.postgres_gitlab_pass}"
@@ -181,7 +185,9 @@ resource "aws_db_instance" "gitlab-postgres" {
   }
 }
 
+#####################################################
 # Elasticache redis: Redis is used by Gitlab to store Jobs
+####################################################
 resource "aws_elasticache_cluster" "gitlab-redis" {
   cluster_id           = "gitlab-redis-001"
   engine               = "redis"

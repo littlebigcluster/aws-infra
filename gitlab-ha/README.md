@@ -12,7 +12,7 @@ La haute disponibilité passera par l'utilisation de certains services managés 
 * S3 ( sauvegarde)
 
 
-![vpc-nat-gateway](img/Architecture_AWS.png)
+![vpc-nat-gateway](img/Gitlab-HA.png)
 
 ## Prerequis
 
