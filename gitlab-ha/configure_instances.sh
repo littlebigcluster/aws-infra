@@ -37,5 +37,7 @@ smtp_password=${SMTP_PASS} \
 ldap_password=${LDAP_PASS} \
 redis_host=${REDIS_ENDPOINT} \
 gitlab_root_password=${GITLABROOT_PASS} \
+s3_backup_bucket=${S3_BUCKET} \
+runner_token=${RUNNER_TOKEN} \
 efs_dnsname=${EFS}"
 

@@ -26,8 +26,8 @@ module "my-vpc" {
   enable_s3_endpoint   = true
 
   enable_dhcp_options              = true
-  dhcp_options_domain_name         = "anybox.int"
-  dhcp_options_domain_name_servers = ["127.0.0.1", "10.55.0.2"]
+  dhcp_options_domain_name         = "${var.region}.compute.internal"
+  # dhcp_options_domain_name_servers = ["127.0.0.1", "10.1.0.2"]
 
   tags = {
     Terraform   = "true"

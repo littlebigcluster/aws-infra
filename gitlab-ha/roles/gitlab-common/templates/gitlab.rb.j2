@@ -254,7 +254,7 @@ gitlab_rails['backup_upload_connection'] = {
    'region' => 'eu-west-1',
    'use_iam_profile' => 'true'
 }
-gitlab_rails['backup_upload_remote_directory'] = 'anybox-gitlab-backup'
+gitlab_rails['backup_upload_remote_directory'] = '{{ s3_backup_bucket }}'
 gitlab_rails['backup_multipart_chunk_size'] = 104857600
 gitlab_rails['backup_encryption'] = 'AES256' # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups
 
@@ -352,7 +352,7 @@ gitlab_rails['uploads_directory'] = "{{ gitlab_datadir }}/uploads"
 ####! **Only applicable on initial setup, changing these settings after database
 ####!   is created and seeded won't yield any change.**
 gitlab_rails['initial_root_password'] = "{{ gitlab_root_pass }}"
-# gitlab_rails['initial_shared_runners_registration_token'] = "token"
+gitlab_rails['initial_shared_runners_registration_token'] = "{{ runner_token }}"
 
 #### Enable or disable automatic database migrations
 # gitlab_rails['auto_migrate'] = true
@@ -1465,28 +1465,28 @@ gitlab_ci['builds_directory'] = '{{ gitlab_datadir }}/builds'
 
 
 
- gitlab_rails['ldap_enabled'] = true
+  gitlab_rails['ldap_enabled'] = true
 
-##! **remember to close this block with 'EOS' below**
- gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
-   main: # 'main' is the GitLab 'provider ID' of this LDAP server
-     label: 'LDAP'
-     host: 'ldap2.anybox.fr'
-     port: 636
-     uid: 'uid'
-     bind_dn: 'uid=gitlab,ou=applications,dc=anybox,dc=fr'
-     password: '{{ ldap_password }}'
-     encryption: 'simple_tls' # "start_tls" or "simple_tls" or "plain"
-     verify_certificates: false
-#     active_directory: true
-     allow_username_or_email_login: false
-##     lowercase_usernames: false
-     block_auto_created_users: false
-     base: 'ou=people,dc=anybox,dc=fr'
-     user_filter: '(objectClass=inetOrgPerson)'
-##     ## EE only
-##     group_base: ''
-##     admin_group: ''
-##     sync_ssh_keys: false
-##
-EOS
+ ##! **remember to close this block with 'EOS' below**
+  gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
+    main: # 'main' is the GitLab 'provider ID' of this LDAP server
+      label: 'LDAP'
+      host: 'ldap2.anybox.fr'
+      port: 636
+      uid: 'uid'
+      bind_dn: 'uid=gitlab,ou=applications,dc=anybox,dc=fr'
+      password: '{{ ldap_password }}'
+      encryption: 'simple_tls' # "start_tls" or "simple_tls" or "plain"
+      verify_certificates: false
+ #     active_directory: true
+      allow_username_or_email_login: false
+ ##     lowercase_usernames: false
+      block_auto_created_users: false
+      base: 'ou=people,dc=anybox,dc=fr'
+      user_filter: '(objectClass=inetOrgPerson)'
+ ##     ## EE only
+ ##     group_base: ''
+ ##     admin_group: ''
+ ##     sync_ssh_keys: false
+ ##
+ EOS

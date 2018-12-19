@@ -32,7 +32,14 @@ Définir toute les variables souhaitées dans les fichiers :
 * variables.template
 * variables.tfvars
 * group_var/all
+Ajouter les mots de passe des variables suivantes dans le fichier .env:
 
+```
+export TF_VAR_ldap_password=xxxxxxxxxxxxxxx
+export TF_VAR_postgres_gitlab_pass=xxxxxxxxxxxxxxxxx
+export TF_VAR_smtp_password=xxxxxxxxxxxxxxxx
+export TF_VAR_gitlab_root_password=xxxxxxxxxxxxxx
+```
 
 ## Lancement:
 
@@ -77,3 +84,6 @@ Lancer le script sh ( reprend l'ensemble des commandes terraform ):
 
 Fork du repo:
 https://github.com/skysec/gitlab-ha-aws
+
+Module used to deploy Gitlab runner
+https://github.com/npalm/terraform-aws-gitlab-runner

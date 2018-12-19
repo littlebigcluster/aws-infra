@@ -119,7 +119,7 @@ resource "aws_route53_record" "bastion" {
 
 resource "aws_launch_configuration" "bastion" {
   name_prefix       = "${var.name}-"
-  image_id          = "${var.ami}"
+  image_id          = "${lookup(var.ami, var.region)}"
   instance_type     = "${var.instance_type}"
   user_data         = "${data.template_file.user_data.rendered}"
   enable_monitoring = "${var.enable_monitoring}"

@@ -16,12 +16,6 @@ variable "subnet_pub_idz" {
   type = "list"
   default = [SUBNETPUB]
 }
-variable "key_path" {
-  default = "~/.ec2/anybox.pem"
-}
-variable "key" {
-  default = "anybox"
-}
 variable "dnsname" {
   default = "gitlab.anybox.cloud"
 }
@@ -39,9 +33,7 @@ variable "efs_mt_count" {}
 variable "postgres_instance" {}
 variable "postgres_gitlab_dbname" {}
 variable "postgres_gitlab_user" {}
-variable "postgres_gitlab_pass" {
-  default = "psqlpassword"
-}
+variable "postgres_gitlab_pass" {}
 variable "elasticache_type" {}
 variable "elasticache_parameter_group" {}
 variable "seed_instance_type" {}
@@ -53,12 +45,28 @@ variable "gitlab_instances_min" {}
 variable "autoscaling_check_grace" {}
 variable "autoscaling_check_type" {}
 variable "autoscaling_capacity" {}
-variable "ldap_password" {
-  default = "ldappassword"
+variable "ldap_password" {}
+variable "smtp_password" {}
+variable "gitlab_root_password" {}
+
+
+
+#### Runner
+
+variable "runner_name" {
+  default = "gitlab_runner"
 }
-variable "smtp_password" {
-  default = "smtppassword"
+variable "gitlab_url" {
+  default = "https://gitlab.anybox.cloud/"
 }
-variable "gitlab_root_password" {
-  default = "gitlab_root_password"
+variable "runner_token" {
+  default = "xxxxxxxxxxxxxxxxxx"
+}  
+variable "environment" {
+  default = "gitlab-ci"
 }
+variable "gitlab_runner_version" {}
+variable "docker_machine_version" {}
+variable "docker_machine_instance_type" {}
+variable "cache_bucket_prefix" {}
+variable "key_name" {}

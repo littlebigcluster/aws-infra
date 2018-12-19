@@ -58,11 +58,14 @@ variable extra_tags {
   description = "A list of tags to associate to the bastion instance."
 }
 
-# Actual Private AMI Amazon Linux Instance
-# eu-west-3 : ami-0041a5d56389da5e2
-# eu-west-1 : ami-0295fa07c245f37f2
 variable "ami" {
-  default = "ami-0295fa07c245f37f2"
+  description = "NAT-VPN"
+  type        = "map"
+
+  default = {
+    eu-west-1      = "ami-0295fa07c245f37f2" # Ireland
+    eu-west-3      = "ami-0041a5d56389da5e2" # Paris
+  }
 }
 
 variable "instance_type" {
