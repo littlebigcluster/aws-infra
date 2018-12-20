@@ -69,7 +69,7 @@ variable "ami" {
 }
 
 variable "instance_type" {
-  default = "t3.nano"
+  default = "t3.micro"
 }
 
 variable "instance_volume_size_gb" {
@@ -135,4 +135,8 @@ variable "key_name" {
 variable "apply_changes_immediately" {
   description = "Whether to apply the changes at once and recreate auto-scaling group"
   default     = false
+}
+
+variable "environnement" {
+  default = "staging"  
 }
