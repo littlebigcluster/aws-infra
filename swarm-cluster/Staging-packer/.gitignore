@@ -7,3 +7,5 @@ variables.tf
 .env
 *.plan
 *.info
+docker-aws-debian-manager.json
+docker-aws-debian-worker.json
