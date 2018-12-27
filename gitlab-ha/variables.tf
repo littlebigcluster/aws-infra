@@ -2,19 +2,19 @@ variable "aws_region" {
   default = "eu-west-1"
 }
 variable "vpc_cidr" {
-  default = "VPC_CIDR"
+  default = "10.55.0.0/16"
 }
 variable "vpc_id" {
   description = "The ID of the VPC in which to deploy the Gitlab"
-  default = "VPCID"
+  default = "vpc-0acf96d67d37208f0"
 }
 variable "subnet_idz" {
   type = "list"
-  default = [SUBNETPRIV]
+  default = ["subnet-05006ed2f72e5ef71","subnet-00350e21671fa05e1","subnet-074673bb2a39ff209"]
 }
 variable "subnet_pub_idz" {
   type = "list"
-  default = [SUBNETPUB]
+  default = ["subnet-0ec328f140cdf6cdd","subnet-09d62f84d8dee5613","subnet-0fda32ba010f10ad4"]
 }
 variable "dnsname" {
   default = "gitlab.anybox.cloud"

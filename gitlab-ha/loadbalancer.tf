@@ -108,7 +108,7 @@ resource "aws_lb_listener" "ssh_lb_listener" {
 resource "aws_lb_target_group" "gitlab_ssh" {
   name     = "gitlabssh"
   protocol = "TCP"
-  port     = 2222
+  port     = 22
   vpc_id      = "${var.vpc_id}"
 }
 

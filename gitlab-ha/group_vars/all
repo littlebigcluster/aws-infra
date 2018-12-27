@@ -2,6 +2,7 @@
 # defaults file for gitlab-common
 system_fqdn: "{{ full_qualified_name }}"
 system_fqdn_ssh: "{{ full_qualified_name_ssh }}"
+system_fqdn_registry: "{{ full_qualified_name_registry }}"
 gitlab_omnibus: "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh"
 gitlab_user: "git"
 gitlab_datadir: "/gitlab-data"

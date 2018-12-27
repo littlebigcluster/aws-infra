@@ -13,7 +13,7 @@ module "gitlab-runner" {
   runners_name            = "${var.runner_name}"
   runners_gitlab_url      = "${var.gitlab_url}"
   runners_token           = "${var.runner_token}"
-
+  runners_token_trinita   = "${var.runner_token_trinita}"
   runners_off_peak_timezone   = "Europe/Paris"
   runners_off_peak_idle_count = 0
   runners_off_peak_idle_time  = 60

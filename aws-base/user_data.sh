@@ -97,4 +97,17 @@ ${additional_user_data_script}
 # default accompte admin available:
 # scp -i sshkey.pem ec2-user@bastion.domain.com:~/admin.tgz .
 
-sudo /etc/openvpn/Generate-openvpn.sh
+
+aws s3 ls s3://${s3_bucket_name}/openvpn
+if [[ $? -ne 0 ]]; then
+   echo "Openvpn init..."
+   sudo /etc/openvpn/Generate-openvpn.sh
+   sudo aws s3 sync /etc/openvpn s3://${s3_bucket_name}/openvpn
+else
+   echo "Openvpn config exist"
+   sudo service openvpn stop
+   sudo rm -rf /etc/openvpn
+   sudo aws s3 sync s3://${s3_bucket_name}/openvpn /etc/openvpn
+   sudo service openvpn start
+fi
+

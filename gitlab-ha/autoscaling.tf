@@ -4,7 +4,7 @@ resource "aws_launch_configuration" "gitlab_lc" {
   image_id = "${aws_ami_from_instance.gitlab-ami.id}"
   instance_type = "${var.gitlab_instance_type}"
   security_groups = ["${aws_security_group.sg_gitlab_private.id}"]
-  key_name = "${var.key}"
+  key_name = "${var.key_name}"
   iam_instance_profile  = "${aws_iam_instance_profile.s3_gitlab_backup.id}"
   lifecycle {
     create_before_destroy = true

@@ -32,7 +32,8 @@ Définir toute les variables souhaitées dans les fichiers :
 * variables.template
 * variables.tfvars
 * group_var/all
-Ajouter les mots de passe des variables suivantes dans le fichier .env:
+
+Ajouter les mots de passe des variables suivantes dans un fichier .env à la racine:
 
 ```
 export TF_VAR_ldap_password=xxxxxxxxxxxxxxx
@@ -62,6 +63,8 @@ Lancer le script sh ( reprend l'ensemble des commandes terraform ):
 * Un Autoscaling groupe est créé avec cette AMI
 * Un Bucket S3 est reservé à la sauvegarde
 * Un backup de gitlab sur S3 est croné toutes les heures
+* Une instance Gitlab-ci ( gitlab-runner ) est lancée dans un autoscaling group
+* Enregistrement auto du/des runner en mode Autoscaling ( instances ec2 spot ) avec schedule des runners (horaires: entre 7h/19h Lundi au Vendredi) ...
 
 ## Ressources AWS utilisées:
 

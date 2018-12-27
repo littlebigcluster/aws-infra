@@ -1,0 +1,70 @@
+{
+  "variables": {
+    "aws_default_region": "{{env `AWS_DEFAULT_REGION`}}",
+    "aws_vpc_id": "{{env `AWS_VPC_ID`}}",
+    "aws_subnet_id": "{{env `AWS_SUBNET_ID`}}",
+    "aws_security_group_id": "{{env `AWS_SECURITY_GROUP_ID`}}",
+    "pwd": "{{env `PWD`}}"
+  },
+  "builders": [
+    {
+      "ami_name": "docker-debian {{isotime \"2006-01-02-030405\"}}",
+      "ami_virtualization_type": "hvm",
+      "associate_public_ip_address": "true",
+      "instance_type": "t2.micro",
+      "region": "{{user `aws_default_region`}}",
+      "vpc_id": "{{user `aws_vpc_id`}}",
+      "subnet_id": "{{user `aws_subnet_id`}}",
+      "source_ami_filter": {
+        "filters": {
+          "name": "*debian-stretch-hvm-x86_64-gp2-*",
+          "root-device-type": "ebs",
+          "virtualization-type": "hvm"
+        },
+        "most_recent": true
+      },
+      "ssh_username": "admin",
+      "tags": {
+        "OS_Version": "Debian",
+        "Release": "9"
+      },
+      "type": "amazon-ebs",
+      "security_group_ids": [ "{{user `aws_security_group_id`}}" ]
+    }
+  ],
+  "post-processors": null,
+  "provisioners": [
+    {
+      "destination": "/tmp/docker.options",
+      "source": "{{user `pwd`}}/docker.options",
+      "type": "file"
+    },{
+      "type": "file",
+      "source": "./init.py",
+      "destination": "/home/admin/init.py"
+  },
+    {
+      "execute_command": "{{ .Vars }} sudo -E sh '{{ .Path }}'",
+      "inline": [
+        "apt-get update",
+        "DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" dist-upgrade",
+        "apt-get -y install vim htop curl",
+        "apt-get -y install apt-transport-https ca-certificates gnupg2 software-properties-common",
+        "curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo $ID)/gpg | sudo apt-key add -",
+        "add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo $ID) $(lsb_release -cs) stable\"",
+        "apt-get update",
+        "apt-get -y install docker-ce",
+        "mkdir -p /etc/systemd/system/docker.service.d",
+        "mv /tmp/docker.options /etc/systemd/system/docker.service.d/docker.conf",
+        "systemctl enable docker.service",
+        "usermod -aG docker admin",
+        "curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose",
+        "chmod +x /usr/local/bin/docker-compose",
+        "apt install -y python3-pip",
+        "pip3 install boto3"
+
+      ],
+      "type": "shell"
+    }
+  ]
+}

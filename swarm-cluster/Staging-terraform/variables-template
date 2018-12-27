@@ -1,0 +1,65 @@
+variable "aws_region" {
+  type    = "string"
+  default = "eu-west-1"
+}
+
+variable "vpc_id" {
+  description = "The ID of the VPC in which to deploy the SWARM cluster"
+  default = "VPCID"
+}
+
+variable "vpc_cidr" {
+  description = "The VPC cidr"
+  default = "VPCCIDR"
+}
+
+variable "subnet_idz" {
+  type = "list"
+  default = [SUBNETPRIV]
+}
+
+variable "subnet_pub_idz" {
+  type = "list"
+  default = [SUBNETPUB]
+}
+
+variable "aws_az" {
+  type    = "list"
+  default = ["eu-west-1a","eu-west-1b","eu-west-1c"]
+}
+
+variable "ec2_ami-manager" {
+  default = "AMI-MANAGER"
+}
+
+variable "ec2_ami-worker" {
+  default = "AMI-WORKER"
+}
+
+variable "manager_count" {
+  default = "3"
+}
+
+variable "worker_count" {
+  default = "2"
+}
+
+variable "manager_size" {
+  default = "t3.micro"
+}
+
+variable "worker_size" {
+  default = "t3.medium"
+}
+
+variable "key" {
+  default = "anybox"
+}
+
+variable "domain_name" {
+  default = "anybox.cloud"
+}
+
+variable "environment" {
+  default = "staging"
+}

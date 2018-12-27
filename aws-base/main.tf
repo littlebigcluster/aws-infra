@@ -1,3 +1,15 @@
+terraform {
+  backend "s3" {
+    bucket = "anybox-terraform"
+    key    = "aws-base"
+    region = "eu-west-1"
+  }
+}
+
+
+
+
+
 data "template_file" "user_data" {
   template = "${file("${path.module}/${var.user_data_file}")}"
 

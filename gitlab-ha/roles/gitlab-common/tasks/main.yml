@@ -92,8 +92,9 @@
     creates: /etc/apt/sources.list.d/gitlab_gitlab-ce.list
 
 - name: Install gitlab-ce
-  apt: 
-    name: gitlab-ce
+  apt:
+    # name: gitlab-ce
+    name: gitlab-ce=11.5.5-ce.0
     state: present
 
 # Gitlab omnibus config file
@@ -106,7 +107,7 @@
     mode: 0600
 
 # Install Anybox Certificate
-- name: Copy Anybox Certificate
+- name: Copy Anybox Certificate LDAP
   copy:
     src: Anybox_CA2.crt
     dest: /usr/local/share/ca-certificates/Anybox_CA2.crt
@@ -114,7 +115,7 @@
     group: root
     mode: 0750
 
-- name: Configure certificate
+- name: Configure Anybox certificate LDAP
   command: update-ca-certificates
 
 
@@ -127,5 +128,5 @@
 - cron:
     name: "Backup Gitlab"
     minute: "0"
-    hour: "*/1"
+    hour: "*/3"
     job: "gitlab-rake gitlab:backup:create > /dev/null"

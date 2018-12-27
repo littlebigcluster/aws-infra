@@ -57,13 +57,13 @@ variable extra_tags {
   default     = []
   description = "A list of tags to associate to the bastion instance."
 }
-
+## Private AMI
 variable "ami" {
-  description = "NAT-VPN"
+  description = "NAT-VPN-SSH"
   type        = "map"
 
   default = {
-    eu-west-1      = "ami-0295fa07c245f37f2" # Ireland
+    eu-west-1      = "ami-0dd116ac650af8830" # Ireland
     eu-west-3      = "ami-0041a5d56389da5e2" # Paris
   }
 }

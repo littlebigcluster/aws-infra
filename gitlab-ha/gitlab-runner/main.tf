@@ -89,6 +89,7 @@ data "template_file" "gitlab_runner" {
 
     runners_name                      = "${var.runners_name}"
     runners_token                     = "${var.runners_token}"
+    runners_token_trinita             = "${var.runners_token_trinita}"
     runners_limit                     = "${var.runners_limit}"
     runners_concurrent                = "${var.runners_concurrent}"
     runners_privilled                 = "${var.runners_privilled}"

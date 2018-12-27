@@ -1,0 +1,1 @@
+* */4 * * * $(aws ecr get-login --region eu-west-1 | sed -e 's/-e none//g') > /dev/null

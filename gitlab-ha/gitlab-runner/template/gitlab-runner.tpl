@@ -50,11 +50,11 @@ gitlab-runner verify --delete gitlab_runner
 
 
 
-cat <<\EOF > /etc/gitlab-runner/register.sh
+cat <<\EOF > /etc/gitlab-runner/register-m4large.sh
 #!/bin/bash
 
 gitlab-runner register -n \
---name "${runners_name}-spot" \
+--name "${runners_name}-spot-m4.large" \
 -u "${gitlab_url}" \
 -r "${runners_token}" \
 --executor "docker+machine" \
@@ -63,7 +63,6 @@ gitlab-runner register -n \
 --locked="false" \
 --docker-image "docker:latest" \
 --cache-shared \
---limit 3 \
 --machine-idle-nodes 1 \
 --machine-max-builds 10 \
 --cache-s3-server-address "s3-${aws_region}.amazonaws.com" \
@@ -75,7 +74,6 @@ gitlab-runner register -n \
 --machine-machine-options amazonec2-instance-type=${runners_instance_type} \
 --machine-machine-options amazonec2-region=${aws_region} \
 --machine-machine-options amazonec2-vpc-id=${runners_vpc_id} \
---machine-machine-options amazonec2-subnet-id=${runners_subnet_id} \
 --machine-machine-options amazonec2-private-address-only \
 --machine-machine-options amazonec2-use-private-address \
 --machine-machine-options amazonec2-request-spot-instance \
@@ -84,12 +82,105 @@ gitlab-runner register -n \
 --machine-machine-options amazonec2-tags=environment,${environment} \
 --machine-machine-options amazonec2-monitoring=${runners_monitoring} \
 --machine-machine-options amazonec2-root-size=${runners_root_size} \
+--machine-off-peak-periods "* * 0-7,18-23 * * mon-fri *" \
+--machine-off-peak-periods "* * * * * sat,sun *" \
 --machine-off-peak-timezone "${runners_off_peak_timezone}" \
 --machine-off-peak-idle-count "${runners_off_peak_idle_count}" \
 --machine-off-peak-idle-time "${runners_off_peak_idle_time}"
 
 EOF
 
-chmod +x /etc/gitlab-runner/register.sh
+chmod +x /etc/gitlab-runner/register-m4large.sh
 
-/etc/gitlab-runner/register.sh
+/etc/gitlab-runner/register-m4large.sh
+
+
+cat <<\EOF > /etc/gitlab-runner/register-m5xlarge.sh
+#!/bin/bash
+
+gitlab-runner register -n \
+--name "${runners_name}-spot-m5.xlarge" \
+-u "${gitlab_url}" \
+-r "${runners_token}" \
+--executor "docker+machine" \
+--tag-list "docker,aws" \
+--run-untagged \
+--locked="true" \
+--docker-image "docker:latest" \
+--cache-shared \
+--machine-idle-nodes 0 \
+--machine-max-builds 10 \
+--cache-s3-server-address "s3-${aws_region}.amazonaws.com" \
+--cache-s3-access-key "${bucket_user_access_key}" \
+--cache-s3-secret-key "${bucket_user_secret_key}" \
+--cache-s3-bucket-name "${bucket_name}" \
+--machine-machine-driver "amazonec2" \
+--machine-machine-name "runner-%s" \
+--machine-machine-options amazonec2-instance-type=m5.xlarge \
+--machine-machine-options amazonec2-region=${aws_region} \
+--machine-machine-options amazonec2-vpc-id=${runners_vpc_id} \
+--machine-machine-options amazonec2-private-address-only \
+--machine-machine-options amazonec2-use-private-address \
+--machine-machine-options amazonec2-request-spot-instance \
+--machine-machine-options amazonec2-spot-price=0.08 \
+--machine-machine-options amazonec2-security-group=${runners_security_group_name} \
+--machine-machine-options amazonec2-tags=environment,${environment} \
+--machine-machine-options amazonec2-monitoring=${runners_monitoring} \
+--machine-machine-options amazonec2-root-size=${runners_root_size} \
+--machine-off-peak-periods "* * 0-7,18-23 * * mon-fri *" \
+--machine-off-peak-periods "* * * * * sat,sun *" \
+--machine-off-peak-timezone "${runners_off_peak_timezone}" \
+--machine-off-peak-idle-count "${runners_off_peak_idle_count}" \
+--machine-off-peak-idle-time "${runners_off_peak_idle_time}"
+
+EOF
+
+chmod +x /etc/gitlab-runner/register-m5xlarge.sh
+
+/etc/gitlab-runner/register-m5xlarge.sh
+
+
+######### TRINITA 
+cat <<\EOF > /etc/gitlab-runner/register-trinita-m4large.sh
+#!/bin/bash
+
+gitlab-runner register -n \
+--name "${runners_name}-TRINITA-m4.large" \
+-u "https://gitlab.com/" \
+-r "${runners_token_trinita}" \
+--executor "docker+machine" \
+--tag-list "docker,aws" \
+--run-untagged \
+--locked="false" \
+--docker-image "docker:latest" \
+--cache-shared \
+--machine-idle-nodes 1 \
+--machine-max-builds 10 \
+--cache-s3-server-address "s3-${aws_region}.amazonaws.com" \
+--cache-s3-access-key "${bucket_user_access_key}" \
+--cache-s3-secret-key "${bucket_user_secret_key}" \
+--cache-s3-bucket-name "${bucket_name}" \
+--machine-machine-driver "amazonec2" \
+--machine-machine-name "runner-%s" \
+--machine-machine-options amazonec2-instance-type=m4.large \
+--machine-machine-options amazonec2-region=${aws_region} \
+--machine-machine-options amazonec2-vpc-id=${runners_vpc_id} \
+--machine-machine-options amazonec2-private-address-only \
+--machine-machine-options amazonec2-use-private-address \
+--machine-machine-options amazonec2-request-spot-instance \
+--machine-machine-options amazonec2-spot-price=0.04 \
+--machine-machine-options amazonec2-security-group=${runners_security_group_name} \
+--machine-machine-options amazonec2-tags=environment,${environment} \
+--machine-machine-options amazonec2-monitoring=${runners_monitoring} \
+--machine-machine-options amazonec2-root-size=${runners_root_size} \
+--machine-off-peak-periods "* * 0-7,18-23 * * mon-fri *" \
+--machine-off-peak-periods "* * * * * sat,sun *" \
+--machine-off-peak-timezone "${runners_off_peak_timezone}" \
+--machine-off-peak-idle-count "${runners_off_peak_idle_count}" \
+--machine-off-peak-idle-time "${runners_off_peak_idle_time}"
+
+EOF
+
+chmod +x /etc/gitlab-runner/register-trinita-m4large.sh
+
+/etc/gitlab-runner/register-trinita-m4large.sh

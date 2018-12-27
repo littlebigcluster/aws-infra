@@ -3,6 +3,17 @@
 # Create AWS Resources and deploy gitlab in HA
 #
 ######
+terraform {
+  backend "s3" {
+    bucket = "anybox-terraform"
+    key    = "gitlab-ha"
+    region = "eu-west-1"
+  }
+}
+
+
+
+
 
 # Use AWS as provider
 
@@ -20,7 +31,7 @@ data "aws_availability_zones" "available" {}
 resource "aws_instance" "gitlab-seed" {
   instance_type = "${var.seed_instance_type}"
   ami = "${var.seed_ami}"
-  key_name = "${var.key}"
+  key_name = "${var.key_name}"
   # key_name = "${aws_key_pair.gitlab-keypair.id}"
   vpc_security_group_ids = ["${aws_security_group.sg_gitlab_public.id}"]
   subnet_id = "${var.subnet_pub_idz[0]}"
@@ -42,6 +53,7 @@ REDIS_ENDPOINT=${aws_elasticache_cluster.gitlab-redis.cache_nodes.0.address} \
 KEYPAIR=${var.key_path} \
 FQN_DOMAIN=${var.dnsname} \
 FQN_DOMAIN_SSH=${var.dnsnamessh} \
+FQN_DOMAIN_REGISTRY=${var.dnsnameregistry} \
 GITLABROOT_PASS=${var.gitlab_root_password} \
 S3_BUCKET=${var.s3_backup_bucket} \
 RUNNER_TOKEN=${var.runner_token} \

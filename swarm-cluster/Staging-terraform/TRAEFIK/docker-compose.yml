@@ -1,0 +1,42 @@
+version: "3.4"
+
+services:
+  traefik:
+    image: traefik:latest
+    command:
+      - "--api"
+      - "--docker"
+      - "--docker.swarmmode"
+      - "--docker.domain=anybox.cloud"
+      - "--docker.watch"
+      # - "--debug=true"
+      # - "--logLevel=DEBUG"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/etc/traefik/traefik.toml
+    networks:
+      - traefik-net
+    ports:
+      - mode: host 
+        published: 80
+        target: 80
+
+      - mode: host
+        published: 8080
+        target: 8080
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.role == manager
+      update_config:
+        parallelism: 1
+        delay: 10s
+
+# volumes:
+#     traefik-acme:        
+
+networks:
+  traefik-net:
+    driver: overlay
+    attachable: true

@@ -2,7 +2,8 @@ terraform.tfstate*
 tmp*
 hosts
 .terraform
-SUBNET*.txt
+*.txt
+variables.tf
 .env
 *.plan
 *.info
