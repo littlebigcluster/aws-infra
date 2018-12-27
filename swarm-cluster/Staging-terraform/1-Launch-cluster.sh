@@ -45,8 +45,9 @@ SUBNETPRIV=$(sed 's/.*/"&"/' SUBNETPRIV.txt | paste -sd, -)
 echo $SUBNETPRIV
 sed -i s/SUBNETPRIV/$SUBNETPRIV/ variables.tf
 
+plan=gitlab-HA-`date '+%Y%m%d%H%M%S'`.plan
 
 # Lancement Cluster SWARM
 terraform init
-terraform plan -out cluster-staging-`date '+%Y%m%d%H%M%S'`.plan
-terraform apply
+terraform plan $plan
+terraform apply $plan

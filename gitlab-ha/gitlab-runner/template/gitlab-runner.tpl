@@ -62,6 +62,7 @@ gitlab-runner register -n \
 --run-untagged \
 --locked="false" \
 --docker-image "docker:latest" \
+--docker-privileged \
 --cache-shared \
 --machine-idle-nodes 1 \
 --machine-max-builds 10 \
@@ -107,6 +108,7 @@ gitlab-runner register -n \
 --run-untagged \
 --locked="true" \
 --docker-image "docker:latest" \
+--docker-privileged \
 --cache-shared \
 --machine-idle-nodes 0 \
 --machine-max-builds 10 \
@@ -153,6 +155,7 @@ gitlab-runner register -n \
 --run-untagged \
 --locked="false" \
 --docker-image "docker:latest" \
+--docker-privileged \
 --cache-shared \
 --machine-idle-nodes 1 \
 --machine-max-builds 10 \

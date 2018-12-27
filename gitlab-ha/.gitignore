@@ -6,3 +6,4 @@ SUBNET*.txt
 .env
 *.plan
 *.info
+variables.tf
