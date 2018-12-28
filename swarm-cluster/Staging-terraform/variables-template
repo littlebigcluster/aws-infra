@@ -59,7 +59,9 @@ variable "key" {
 variable "domain_name" {
   default = "anybox.cloud"
 }
-
+variable "cluster" {
+  default = "swarm"
+}
 variable "environment" {
   default = "staging"
 }

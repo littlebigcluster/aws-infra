@@ -2,8 +2,11 @@
 
 echo "UPDATE AMI ..."
 
-AMIMANAGER=$(cat "../Staging-packer/ami-manager.txt")
-AMIWORKER=$(cat "../Staging-packer/ami-worker.txt")
+# AMIMANAGER=$(cat "../Staging-packer/ami-manager.txt")
+# AMIWORKER=$(cat "../Staging-packer/ami-worker.txt")
+
+AMIMANAGER=$(aws ec2 describe-images --owners 972087677911 --filters 'Name=name,Values=docker-manager-staging*' 'Name=state,Values=available' | jq -r '.Images | sort_by(.CreationDate) | last(.[]).ImageId')
+AMIWORKER=$(aws ec2 describe-images --owners 972087677911 --filters 'Name=name,Values=docker-worker-staging*' 'Name=state,Values=available' | jq -r '.Images | sort_by(.CreationDate) | last(.[]).ImageId')
 
 cp variables-template variables.tf
 sed -i s/AMI-MANAGER/$AMIMANAGER/ variables.tf
@@ -45,9 +48,9 @@ SUBNETPRIV=$(sed 's/.*/"&"/' SUBNETPRIV.txt | paste -sd, -)
 echo $SUBNETPRIV
 sed -i s/SUBNETPRIV/$SUBNETPRIV/ variables.tf
 
-plan=gitlab-HA-`date '+%Y%m%d%H%M%S'`.plan
+plan=cluster-swarm-staging-`date '+%Y%m%d%H%M%S'`.plan
 
 # Lancement Cluster SWARM
 terraform init
-terraform plan $plan
+terraform plan --out $plan
 terraform apply $plan

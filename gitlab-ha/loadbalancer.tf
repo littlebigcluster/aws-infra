@@ -68,6 +68,11 @@ resource "aws_lb_target_group" "gitlab_lb" {
     matcher             = "200-499"
     port                = "80"
   }
+  stickiness {
+    type = "lb_cookie"
+    cookie_duration = 1800
+    enabled = true
+  }
 }
 
 # Create a new ALB Target Group attachment

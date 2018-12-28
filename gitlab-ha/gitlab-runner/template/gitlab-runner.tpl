@@ -157,7 +157,7 @@ gitlab-runner register -n \
 --docker-image "docker:latest" \
 --docker-privileged \
 --cache-shared \
---machine-idle-nodes 1 \
+--machine-idle-nodes 0 \
 --machine-max-builds 10 \
 --cache-s3-server-address "s3-${aws_region}.amazonaws.com" \
 --cache-s3-access-key "${bucket_user_access_key}" \

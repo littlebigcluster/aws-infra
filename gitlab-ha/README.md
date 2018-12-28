@@ -40,6 +40,7 @@ export TF_VAR_ldap_password=xxxxxxxxxxxxxxx
 export TF_VAR_postgres_gitlab_pass=xxxxxxxxxxxxxxxxx
 export TF_VAR_smtp_password=xxxxxxxxxxxxxxxx
 export TF_VAR_gitlab_root_password=xxxxxxxxxxxxxx
+export TF_VAR_runner_token=xxxxxxxxxxxxx
 ```
 
 ## Lancement:

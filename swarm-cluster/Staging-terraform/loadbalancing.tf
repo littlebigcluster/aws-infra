@@ -56,6 +56,22 @@ resource "aws_lb_listener" "https_lb_listener" {
 
 
 
+resource "aws_lb_listener_rule" "traefik_routing" {
+  listener_arn = "${aws_lb_listener.https_lb_listener.arn}"
+  priority     = 99
+
+  action {
+    type             = "forward"
+    target_group_arn = "${aws_lb_target_group.swarm_lb_traefik.arn}"
+  }
+  condition {
+    field  = "host-header"
+    values = ["traefik-${var.environment}.${var.domain_name}"]
+  }
+}
+
+
+
 
 resource "aws_lb_target_group" "swarm_lb" {
   name     = "swarm-staging-lb"
@@ -69,5 +85,21 @@ resource "aws_lb_target_group" "swarm_lb" {
     interval            = 5    
     matcher             = "200-499"   
     port                = "80" 
+  }
+}
+
+
+resource "aws_lb_target_group" "swarm_lb_traefik" {
+  name     = "swarm-staging-lb_dashboard"
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = "${var.vpc_id}"
+  health_check {    
+    healthy_threshold   = 2    
+    unhealthy_threshold = 2    
+    timeout             = 4    
+    interval            = 5    
+    matcher             = "200-499"   
+    port                = "8080" 
   }
 }

@@ -2098,8 +2098,6 @@ registry_external_url 'https://{{ system_fqdn_registry }}'
 
 ## Settings used by GitLab application
 gitlab_rails['registry_enabled'] = true
-## Settings used by GitLab application
-gitlab_rails['registry_enabled'] = true
 gitlab_rails['registry_path'] = "{{ gitlab_datadir }}/shared/registry"
 {# registry['dir'] = "{{ gitlab_datadir }}/registry" #}
 
@@ -2119,7 +2117,15 @@ gitlab_rails['registry_path'] = "{{ gitlab_datadir }}/shared/registry"
 
 registry_nginx['listen_port'] = 80 # override only if you use a reverse proxy: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/nginx.md#setting-the-nginx-listen-port
 registry_nginx['listen_https'] = false # override only if your reverse proxy internally communicates over HTTP: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/nginx.md#supporting-proxied-ssl
+{# registry_nginx['proxy_set_headers'] = {
+  "X-Forwarded-Proto" => "https",
+  "X-Forwarded-Ssl" => "on"
+} #}
+
 registry_nginx['proxy_set_headers'] = {
+  "Host" => "$http_host",
+  "X-Real-IP" => "$remote_addr",
+  "X-Forwarded-For" => "$proxy_add_x_forwarded_for",
   "X-Forwarded-Proto" => "https",
   "X-Forwarded-Ssl" => "on"
 }

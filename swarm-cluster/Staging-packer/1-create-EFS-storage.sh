@@ -31,7 +31,7 @@ aws efs create-tags \
 
 
 SUBNETID=$(aws ec2 describe-subnets --output text --filters "Name=vpc-id,Values=$VPCID" \
---query 'Subnets[*].{SubnetId:SubnetId,Name:Tags[?Key==`Name`].Value|[0]}' | grep Private | awk '{print $4}')
+--query 'Subnets[*].{SubnetId:SubnetId,Name:Tags[?Key==`Name`].Value|[0]}' | grep private | awk '{print $2}')
 
 sleep 10
 
