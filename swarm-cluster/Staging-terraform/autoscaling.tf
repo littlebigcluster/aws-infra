@@ -28,7 +28,7 @@ resource "aws_autoscaling_group" "swarm_manager_asg" {
   availability_zones    = "${var.aws_az}"
   vpc_zone_identifier   = "${var.subnet_idz}"
   launch_configuration  = "${aws_launch_configuration.swarm_manager_as_conf.name}"
-
+  enabled_metrics = ["GroupMinSize", "GroupMaxSize", "GroupDesiredCapacity", "GroupInServiceInstances", "GroupTotalInstances"]
   tag {
     key                 = "Name"
     value               = "SwarmManager-staging"
@@ -46,11 +46,22 @@ resource "aws_autoscaling_group" "swarm_manager_asg" {
   }
 }
 
+
 # Create a new ALB Target Group attachment
 resource "aws_autoscaling_attachment" "swarm_manager_asg" {
   autoscaling_group_name = "${aws_autoscaling_group.swarm_manager_asg.id}"
   alb_target_group_arn   = "${aws_lb_target_group.swarm_lb.arn}"
 }
+
+# Create a new ALB Target Group attachment
+resource "aws_autoscaling_attachment" "swarm_manager_asg_traefik" {
+  autoscaling_group_name = "${aws_autoscaling_group.swarm_manager_asg.id}"
+  alb_target_group_arn   = "${aws_lb_target_group.swarm_lb_traefik.arn}"
+}
+
+
+
+
 
 
 
@@ -87,7 +98,7 @@ resource "aws_autoscaling_group" "swarm_worker_asg" {
   vpc_zone_identifier   = "${var.subnet_idz}"
   launch_configuration  = "${aws_launch_configuration.swarm_worker_as_conf.name}"
   depends_on            = ["aws_autoscaling_group.swarm_manager_asg"]
-
+  enabled_metrics = ["GroupMinSize", "GroupMaxSize", "GroupDesiredCapacity", "GroupInServiceInstances", "GroupTotalInstances"]
   tag {
     key                 = "Name"
     value               = "SwarmWorker-staging"

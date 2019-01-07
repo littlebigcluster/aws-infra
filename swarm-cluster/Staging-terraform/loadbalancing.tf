@@ -90,7 +90,7 @@ resource "aws_lb_target_group" "swarm_lb" {
 
 
 resource "aws_lb_target_group" "swarm_lb_traefik" {
-  name     = "swarm-staging-lb_dashboard"
+  name     = "swarm-staging-lb-dashboard"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = "${var.vpc_id}"
