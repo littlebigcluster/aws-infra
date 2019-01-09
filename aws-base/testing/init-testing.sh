@@ -19,9 +19,12 @@ do
   check_program "${I}"
 done
 
+read -p "Are you sure to do that ? Double check variables used in your configuration file before typing 'y'" -n 1 -r
+if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        # Lancement terraform
+        terraform init
+        terraform plan -out $plan
+        terraform apply $plan
+fi
 
-
-# Lancement terraform
-terraform init
-terraform plan -out $plan
-terraform apply $plan
