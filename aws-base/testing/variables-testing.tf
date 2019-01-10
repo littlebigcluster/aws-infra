@@ -6,7 +6,7 @@ variable "vpc_name" {
 }
 variable "vpc_cidr" {
   description = "The VPC cidr"
-  default = "10.56.0.0/16"
+  default = "10.55.0.0/16"
 }
 variable "aws_az" {
   type    = "list"
@@ -14,20 +14,20 @@ variable "aws_az" {
 }
 variable "subnet_priv" {
   type = "list"
-  default = ["10.55.11.0/24", "10.55.21.0/24", "10.55.31.0/24"]
+  default = ["10.55.10.0/24", "10.55.20.0/24", "10.55.30.0/24"]
 }
 variable "subnet_pub" {
   type = "list"
-  default = ["10.55.4.0/24", "10.55.5.0/24", "10.55.6.0/24"]
+  default = ["10.55.1.0/24", "10.55.2.0/24", "10.55.3.0/24"]
 }
 variable "bastion_size" {
   default = "t3.micro"
 }
 variable "bastion_dns_name" {
-  default = "bastion.anybox.testing.cloud"
+  default = "bastion-testing.anybox.cloud"
 }
 variable "domain_name" {
-  default = "anybox.testing.cloud"
+  default = "anybox.cloud"
 }
 
 variable "allowed_cidr" {
@@ -49,7 +49,7 @@ variable "allowed_security_groups" {
 }
 
 variable "name" {
-  default = "BASTION-VPN"
+  default = "BASTION-TESTING-VPN"
 }
 
 variable extra_tags {
@@ -82,7 +82,7 @@ variable "iam_instance_profile" {
 }
 
 variable "user_data_file" {
-  default = "user_data.sh"
+  default = "user_data_testing.sh"
 }
 
 variable "s3_bucket_name" {
@@ -138,5 +138,5 @@ variable "apply_changes_immediately" {
 }
 
 variable "environnement" {
-  default = "staging"  
+  default = "staging"
 }

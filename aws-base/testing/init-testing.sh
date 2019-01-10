@@ -2,8 +2,6 @@
 
 plan=VPC-TESTING-3AZs-VPN-`date '+%Y%m%d%H%M%S'`.plan
 
-
-
 # Check if a given program is in PATH
 check_program () {
   
@@ -19,7 +17,7 @@ do
   check_program "${I}"
 done
 
-read -p "Are you sure to do that ? Double check variables used in your configuration file before typing 'y'" -n 1 -r
+read -p "Are you sure to do that ? Double check variables used in your configuration file before typing 'y'" -r
 if [[ $REPLY =~ ^[Yy]$ ]]
     then
         # Lancement terraform
