@@ -78,7 +78,7 @@ variable "instance_volume_size_gb" {
 }
 
 variable "iam_instance_profile" {
-  default = "s3_bastion"
+  default = "s3_bastion_testing"
 }
 
 variable "user_data_file" {
