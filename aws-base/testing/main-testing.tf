@@ -6,8 +6,15 @@ terraform {
   }
 }
 
+resource "tls_private_key" "anybox-testing" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
 
-
+resource "aws_key_pair" "generated_key" {
+  key_name   = "${var.key_name}"
+  public_key = "${tls_private_key.anybox-testing.public_key_openssh}"
+}
 
 
 data "template_file" "user_data" {
