@@ -1,0 +1,77 @@
+variable "aws_region" {
+  default = "eu-west-1"
+}
+variable "vpc_cidr" {
+  default = "VPC_CIDR"
+}
+variable "vpc_id" {
+  description = "The ID of the VPC in which to deploy the Gitlab"
+  default = "VPCID"
+}
+variable "subnet_idz" {
+  type = "list"
+  default = [SUBNETPRIV]
+}
+variable "subnet_pub_idz" {
+  type = "list"
+  default = [SUBNETPUB]
+}
+variable "dnsname" {
+  default = "gitlab-testing.anybox.cloud"
+}
+variable "dnsnamessh" {
+  default = "git-testing.anybox.cloud"
+}
+variable "domainname" {
+  default = "anybox.cloud"
+}
+variable "dnsnameregistry" {
+  default = "registry-testing.anybox.cloud"
+}
+variable "s3_backup_bucket" {
+  default = "anybox-testing-gitlab-backup"
+}
+
+variable "efs_mt_count" {}
+variable "postgres_instance" {}
+variable "postgres_gitlab_dbname" {}
+variable "postgres_gitlab_user" {}
+variable "postgres_gitlab_pass" {}
+variable "elasticache_type" {}
+variable "elasticache_parameter_group" {}
+variable "seed_instance_type" {}
+variable "seed_ami" {}
+variable "gitlab_instance_type" {}
+variable "ami_id" {}
+variable "gitlab_instances_max" {}
+variable "gitlab_instances_min" {}
+variable "autoscaling_check_grace" {}
+variable "autoscaling_check_type" {}
+variable "autoscaling_capacity" {}
+variable "ldap_password" {}
+variable "smtp_password" {}
+variable "gitlab_root_password" {}
+variable "key_path" {
+  default = "~/.ec2/anybox-testing.pem"
+}
+
+
+#### Runner
+
+variable "runner_name" {
+  default = "gitlab_runner"
+}
+variable "gitlab_url" {
+  default = "https://gitlab-testing.anybox.cloud/"
+}
+variable "runner_token" {
+  default = "xxxxxxxxxxxxxxxxxx"
+}
+variable "environment" {
+  default = "gitlab-ci"
+}
+variable "gitlab_runner_version" {}
+variable "docker_machine_version" {}
+variable "docker_machine_instance_type" {}
+variable "cache_bucket_prefix" {}
+variable "key_name" {}
