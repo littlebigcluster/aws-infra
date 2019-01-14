@@ -5,15 +5,10 @@
 ######
 terraform {
   backend "s3" {
-    bucket = "anybox-terraform"
     key    = "gitlab-ha"
     region = "eu-west-1"
   }
 }
-
-
-
-
 
 # Use AWS as provider
 

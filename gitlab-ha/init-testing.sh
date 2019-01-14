@@ -66,7 +66,9 @@ sed -i s~VPC_CIDR~$VPC_CIDR~ variables.tf
 
 ### TERRAFORM lancement
 
-terraform init -backend-config=backend_config
+terraform workspace new testing
+
+terraform init -backend-config=backend_config_testing
 
 terraform plan -out $plan
 
