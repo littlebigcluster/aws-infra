@@ -1,20 +1,51 @@
+locals {
+  env = "${terraform.workspace}"
+  vpc = {
+    "default" = "ANYBOX"
+    "testing" = "ANYBOX-TESTING"
+  }
+  s3-bastion = {
+    "default" = "bastion"
+    "testing" = "bastion_testing"
+  }
+  bucket = {
+    "default" = "anybox"
+    "testing" = "anybox-testing"
+  }
+  bastion = {
+    "default" = "BASTION"
+    "testing" = "BASTION-TESTING"
+  }
+  bucket_name = "${lookup(local.bucket, local.env)}-terraform"
+  s3_bucket_name = "${lookup(local.bucket, local.env)}-sshkey-bastion"
+  bastion_vpn_name = "${lookup(local.bastion, local.env)}-VPN"
+  iam_instance_profile = "s3_${lookup(local.s3-bastion, local.env)}"
+  key_name = "${lookup(local.bucket, local.env)}"
+  vpc_name = "VPC-${lookup(local.vpc, local.env)}"
+}
+
 terraform {
   backend "s3" {
-    bucket = "anybox-terraform"
     key    = "aws-base"
     region = "eu-west-1"
   }
 }
 
+resource "tls_private_key" "anybox-key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
 
-
-
+resource "aws_key_pair" "generated_key" {
+  key_name   = "${local.key_name}"
+  public_key = "${tls_private_key.anybox-key.public_key_openssh}"
+}
 
 data "template_file" "user_data" {
   template = "${file("${path.module}/${var.user_data_file}")}"
 
   vars {
-    s3_bucket_name              = "${var.s3_bucket_name}"
+    s3_bucket_name              = "${local.s3_bucket_name}"
     ssh_user                    = "${var.ssh_user}"
     keys_update_frequency       = "${var.keys_update_frequency}"
     enable_hourly_cron_updates  = "${var.enable_hourly_cron_updates}"
@@ -34,15 +65,15 @@ resource "aws_eip" "bastion" {
 
 
 resource "aws_launch_configuration" "bastion" {
-  name_prefix       = "${var.name}-"
+  name_prefix       = "${local.bastion_vpn_name}"
   image_id          = "${lookup(var.ami, var.region)}"
   instance_type     = "${var.instance_type}"
   user_data         = "${data.template_file.user_data.rendered}"
   enable_monitoring = "${var.enable_monitoring}"
   associate_public_ip_address = "${aws_eip.bastion.public_ip}"
-  iam_instance_profile        = "${var.iam_instance_profile}"
+  iam_instance_profile        = "${local.iam_instance_profile}"
   associate_public_ip_address = "true"
-  key_name                    = "${var.key_name}"
+  key_name                    = "${local.key_name}"
 
   security_groups = [
     "${compact(concat(list(aws_security_group.bastion.id), split(",", "${var.security_group_ids}")))}",
@@ -85,7 +116,7 @@ resource "aws_autoscaling_group" "bastion" {
   tags = [
     "${concat(
         list(
-          map("key", "Name", "value", "${var.name}", "propagate_at_launch", true),
+          map("key", "Name", "value", "${local.bastion_vpn_name}", "propagate_at_launch", true),
           map("key", "EIP", "value", "${var.eip}", "propagate_at_launch", true)
         ),
         var.extra_tags)

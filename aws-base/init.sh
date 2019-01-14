@@ -22,6 +22,6 @@ done
 
 
 # Lancement terraform
-terraform init
+terraform init -backend-config=backend_config
 terraform plan -out $plan
 terraform apply $plan

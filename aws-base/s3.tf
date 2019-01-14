@@ -1,11 +1,10 @@
-
 resource "aws_iam_instance_profile" "s3_bastion" {
-  name = "${var.iam_instance_profile}"
+  name = "${local.iam_instance_profile}"
   role = "${aws_iam_role.s3_bastion.name}"
 }
 
 resource "aws_iam_role" "s3_bastion" {
-  name = "${var.iam_instance_profile}"
+  name = "${local.iam_instance_profile}"
   path = "/"
 
   assume_role_policy = <<EOF
@@ -49,8 +48,8 @@ resource "aws_iam_role_policy" "s3_bastion_policy" {
             "Effect": "Allow",
             "Action": "s3:*",
             "Resource": [
-              "arn:aws:s3:::${var.s3_bucket_name}/*",
-              "arn:aws:s3:::${var.s3_bucket_name}"  
+              "arn:aws:s3:::${local.s3_bucket_name}/*",
+              "arn:aws:s3:::${local.s3_bucket_name}"  
             ]         
         }
     ]
@@ -82,7 +81,7 @@ EOF
 
 
 resource "aws_s3_bucket" "s3_bucket" {
-  bucket = "${var.s3_bucket_name}"
+  bucket = "${local.s3_bucket_name}"
   acl    = "private"
 
   tags {

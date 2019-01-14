@@ -1,6 +1,8 @@
 #!/bin/bash
 
-plan=VPC-TESTING-3AZs-VPN-`date '+%Y%m%d%H%M%S'`.plan
+plan=VPC-3AZs-VPN-`date '+%Y%m%d%H%M%S'`.plan
+
+
 
 # Check if a given program is in PATH
 check_program () {
@@ -11,7 +13,7 @@ if [ ! $(which $1) ]; then
 fi
 }
 
-# Check if terraform and ansible are in PATH
+# Check if terraform are in PATH
 for I in terraform ansible 
 do
   check_program "${I}"
@@ -21,8 +23,8 @@ read -p "Are you sure to do that ? Double check variables used in your configura
 if [[ $REPLY =~ ^[Yy]$ ]]
     then
         # Lancement terraform
-        terraform init
+        terraform workspace new testing
+        terraform init -backend-config=backend_config_testing
         terraform plan -out $plan
         terraform apply $plan
 fi
-
