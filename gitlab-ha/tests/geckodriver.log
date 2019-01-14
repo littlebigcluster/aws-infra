@@ -1,0 +1,43 @@
+1545144423604	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.PQya1qNdiaxP"
+
+(firefox-esr:32320): Gtk-WARNING **: Theme parsing error: <data>:1:34: Expected ')' in color definition
+
+(firefox-esr:32320): Gtk-WARNING **: Theme parsing error: <data>:1:77: Expected ')' in color definition
+1545144425612	Marionette	INFO	Listening on port 37161
+1545144425718	Marionette	WARN	TLS certificate errors will be ignored for this session
+console.log: Accessibility service init or shutdown observer does not exist.
+1545148688861	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.epKj84YNikOL"
+
+(firefox-esr:18215): Gtk-WARNING **: Theme parsing error: <data>:1:34: Expected ')' in color definition
+
+(firefox-esr:18215): Gtk-WARNING **: Theme parsing error: <data>:1:77: Expected ')' in color definition
+1545148690668	Marionette	INFO	Listening on port 35709
+1545148690774	Marionette	WARN	TLS certificate errors will be ignored for this session
+console.log: Accessibility service init or shutdown observer does not exist.
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1545148721196	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.pVPDtuiIoPQ2"
+
+(firefox-esr:18409): Gtk-WARNING **: Theme parsing error: <data>:1:34: Expected ')' in color definition
+
+(firefox-esr:18409): Gtk-WARNING **: Theme parsing error: <data>:1:77: Expected ')' in color definition
+1545148723007	Marionette	INFO	Listening on port 34955
+1545148723106	Marionette	WARN	TLS certificate errors will be ignored for this session
+console.log: Accessibility service init or shutdown observer does not exist.
+1545148810979	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.qDDcxSgda4fv"
+
+(firefox-esr:18981): Gtk-WARNING **: Theme parsing error: <data>:1:34: Expected ')' in color definition
+
+(firefox-esr:18981): Gtk-WARNING **: Theme parsing error: <data>:1:77: Expected ')' in color definition
+1545148812887	Marionette	INFO	Listening on port 41325
+1545148812994	Marionette	WARN	TLS certificate errors will be ignored for this session
+console.log: Accessibility service init or shutdown observer does not exist.
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1545386995244	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.EpoQoQ8NGMe5"
+
+(firefox-esr:12089): Gtk-WARNING **: Theme parsing error: <data>:1:34: Expected ')' in color definition
+
+(firefox-esr:12089): Gtk-WARNING **: Theme parsing error: <data>:1:77: Expected ')' in color definition
+1545386998362	Marionette	INFO	Listening on port 41841
+1545386998462	Marionette	WARN	TLS certificate errors will be ignored for this session
+console.log: Accessibility service init or shutdown observer does not exist.
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
