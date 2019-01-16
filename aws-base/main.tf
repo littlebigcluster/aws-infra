@@ -22,6 +22,7 @@ locals {
   iam_instance_profile = "s3_${lookup(local.s3-bastion, local.env)}"
   key_name = "${lookup(local.bucket, local.env)}"
   vpc_name = "VPC-${lookup(local.vpc, local.env)}"
+  autoscaling_group = "${lookup(local.bastion, local.env)}-VPN"
 }
 
 terraform {
@@ -87,7 +88,7 @@ resource "aws_launch_configuration" "bastion" {
 }
 
 resource "aws_autoscaling_group" "bastion" {
-  name = "${var.name}"
+  name = "${local.autoscaling_group}"
 
   vpc_zone_identifier = [
     "${module.my-vpc.public_subnets}",

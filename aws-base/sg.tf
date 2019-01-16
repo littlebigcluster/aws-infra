@@ -1,10 +1,10 @@
 resource "aws_security_group" "bastion" {
-  name        = "${var.name}"
+  name        = "${local.autoscaling_group}"
   vpc_id      = "${module.my-vpc.vpc_id}"
   description = "Bastion security group (only SSH and VPN inbound access is allowed)"
 
   tags {
-    Name = "${var.name}"
+    Name = "${local.autoscaling_group}"
   }
 }
 
