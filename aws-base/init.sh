@@ -19,9 +19,8 @@ do
   check_program "${I}"
 done
 
-
-
 # Lancement terraform
+terraform workspace select default
 terraform init -backend-config=backend_config
 terraform plan -out $plan
 terraform apply $plan
