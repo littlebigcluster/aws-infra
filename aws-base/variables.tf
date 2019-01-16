@@ -65,6 +65,7 @@ variable "ami" {
   default = {
     eu-west-1      = "ami-0dd116ac650af8830" # Ireland
     eu-west-3      = "ami-0041a5d56389da5e2" # Paris
+    eu-central-1   = "ami-0aae2e0b842d4cdfa" # Frankfurt
   }
 }
 
