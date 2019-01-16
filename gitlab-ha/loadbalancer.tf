@@ -51,7 +51,7 @@ resource "aws_lb_listener_rule" "gitlab_routing" {
   }
   condition {
     field  = "host-header"
-    values = ["${var.dnsname}"]
+    values = ["${local.dns_name}"]
   }
 }
 

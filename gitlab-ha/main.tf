@@ -3,6 +3,59 @@
 # Create AWS Resources and deploy gitlab in HA
 #
 ######
+
+locals {
+  env = "${terraform.workspace}"
+  vpc = {
+    "default" = "ANYBOX"
+    "testing" = "ANYBOX-TESTING"
+  }
+  s3-bastion = {
+    "default" = "bastion"
+    "testing" = "bastion_testing"
+  }
+  bucket = {
+    "default" = "anybox"
+    "testing" = "anybox-testing"
+  }
+  bastion = {
+    "default" = "BASTION"
+    "testing" = "BASTION-TESTING"
+  }
+  dns = {
+    "default" = "anybox"
+    "testing" = "testing.anybox"
+  }
+  registry = {
+    "default" = "registry"
+    "testing" = "registry-testing"
+  }
+  gitlab_runner_name = {
+    "default" = "gitlab"
+    "testing" = "gitlab_testing"
+  }
+  gitlab_url = {
+    "default" = "gitlab"
+    "testing" = "gitlab-testing"
+  }
+  cache = {
+    "default" = "gitlab-runner-cache"
+    "testing" = "gitlab-runner-cache-testing"
+  }
+
+  key_path = "~/.ec2/${lookup(local.bucket, local.env)}.pem"
+  key_name = "${lookup(local.bucket, local.env)}"
+  dns_name = "gitlab-${lookup(local.dns, local.env)}.cloud"
+  dns_name_ssh = "git-${lookup(local.dns, local.env)}.cloud"
+  dns_name_registry = "${lookup(local.dns, local.env)}.anybox.cloud"
+  s3_backup_bucket = "${lookup(local.bucket, local.env)}-gitlab-backup"
+  runner_name = "${lookup(local.gitlab_runner_name, local.env)}_runner"
+  gitlab_url = "https://${lookup(local.gitlab_url, local.env)}.anybox.cloud"
+  environment = "${lookup(local.gitlab_url, local.env)}-ci"
+  gitlab_cache = "${var.cache_bucket_prefix}${data.aws_caller_identity.current.account_id}-${lookup(local.cache, local.env)}"
+
+}
+
 terraform {
   backend "s3" {
     key    = "gitlab-ha"
@@ -45,12 +98,12 @@ RDS_PASS=${var.postgres_gitlab_pass} \
 LDAP_PASS=${var.ldap_password} \
 SMTP_PASS=${var.smtp_password} \
 REDIS_ENDPOINT=${aws_elasticache_cluster.gitlab-redis.cache_nodes.0.address} \
-KEYPAIR=${var.key_path} \
-FQN_DOMAIN=${var.dnsname} \
-FQN_DOMAIN_SSH=${var.dnsnamessh} \
-FQN_DOMAIN_REGISTRY=${var.dnsnameregistry} \
+KEYPAIR=${local.key_path} \
+FQN_DOMAIN=${local.dns_name} \
+FQN_DOMAIN_SSH=${local.dns_name_ssh} \
+FQN_DOMAIN_REGISTRY=${local.dns_name_registry} \
 GITLABROOT_PASS=${var.gitlab_root_password} \
-S3_BUCKET=${var.s3_backup_bucket} \
+S3_BUCKET=${local.s3_backup_bucket} \
 RUNNER_TOKEN=${var.runner_token} \
 EFS="${aws_efs_file_system.gitlab_efs.id}.efs.${var.aws_region}.amazonaws.com" \
 ./configure_instances.sh

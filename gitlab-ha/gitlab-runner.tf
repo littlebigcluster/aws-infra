@@ -3,15 +3,15 @@ module "gitlab-runner" {
   # depends_on = ["${aws_autoscaling_group.gitlab_autoscaling.name}"]
 
   aws_region              = "${var.aws_region}"
-  environment             = "${var.environment}"
+  environment             = "${local.environment}"
   key_name                = "${var.key_name}"
 
   vpc_id                  = "${var.vpc_id}"
   subnet_id_gitlab_runner = "${element(var.subnet_idz, 2)}"
   subnet_id_runners       = "${element(var.subnet_idz, 2)}"
 
-  runners_name            = "${var.runner_name}"
-  runners_gitlab_url      = "${var.gitlab_url}"
+  runners_name            = "${local.runner_name}"
+  runners_gitlab_url      = "${local.gitlab_url}"
   runners_token           = "${var.runner_token}"
   runners_token_trinita   = "${var.runner_token_trinita}"
   runners_off_peak_timezone   = "Europe/Paris"

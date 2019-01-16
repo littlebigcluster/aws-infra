@@ -10,7 +10,7 @@ data "aws_route53_zone" "my_zone" {
 
 resource "aws_route53_record" "gitlab" {
   zone_id = "${data.aws_route53_zone.my_zone.zone_id}"
-  name    = "${var.dnsname}"
+  name    = "${local.dns_name}"
   type    = "A"
 
   alias {
@@ -24,7 +24,7 @@ resource "aws_route53_record" "gitlab" {
 
 resource "aws_route53_record" "gitlab_ssh" {
   zone_id = "${data.aws_route53_zone.my_zone.zone_id}"
-  name    = "${var.dnsnamessh}"
+  name    = "${local.dns_name_ssh}"
   type    = "A"
 
   alias {
@@ -36,7 +36,7 @@ resource "aws_route53_record" "gitlab_ssh" {
 
 resource "aws_route53_record" "gitlab_registry" {
   zone_id = "${data.aws_route53_zone.my_zone.zone_id}"
-  name    = "${var.dnsnameregistry}"
+  name    = "${local.dns_name_registry}"
   type    = "A"
 
   alias {
